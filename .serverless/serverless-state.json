@@ -1,0 +1,72 @@
+{
+  "service": {
+    "service": "lambda-loglify",
+    "serviceObject": {
+      "name": "lambda-loglify"
+    },
+    "provider": {
+      "stage": "dev",
+      "region": "us-west-1",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._'\",\\-\\/\\(\\)]+?)}",
+      "name": "aws",
+      "runtime": "nodejs8.10",
+      "functions": {
+        "router": {
+          "handler": "handler.probot",
+          "environment": {
+            "WEBHOOK_SECRET": "top_secret",
+            "APP_ID": 18970,
+            "LOG_FORMAT": "json"
+          },
+          "events": [
+            {
+              "http": null,
+              "path": "/probot",
+              "method": "post"
+            }
+          ]
+        }
+      },
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      }
+    },
+    "pluginsData": {},
+    "functions": {}
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/lambda-loglify/dev/1539401739466-2018-10-13T03:35:39.466Z",
+    "artifact": ""
+  }
+}
