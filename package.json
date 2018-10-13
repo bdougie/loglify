@@ -1,0 +1,50 @@
+{
+  "name": "loglify",
+  "version": "1.0.0",
+  "description": "A Probot app",
+  "author": "Brian 'bdougie' Douglas <ilikerobot@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/bdougie/loglify.git",
+  "homepage": "https://github.com/bdougie/loglify",
+  "bugs": "https://github.com/bdougie/loglify/issues",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "dev": "nodemon",
+    "start": "probot run ./index.js",
+    "lint": "standard --fix",
+    "test": "jest && standard",
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+  },
+  "dependencies": {
+    "@probot/serverless-lambda": "^0.2.0",
+    "probot": "^7.2.0"
+  },
+  "devDependencies": {
+    "jest": "^22.4.3",
+    "nodemon": "^1.17.2",
+    "smee-client": "^1.0.2",
+    "standard": "^10.0.3"
+  },
+  "engines": {
+    "node": ">= 8.3.0"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "nodemonConfig": {
+    "exec": "npm start",
+    "watch": [
+      ".env",
+      "."
+    ]
+  }
+}
