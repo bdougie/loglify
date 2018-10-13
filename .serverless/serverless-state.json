@@ -6,27 +6,10 @@
     },
     "provider": {
       "stage": "dev",
-      "region": "us-west-1",
+      "region": "us-east-1",
       "variableSyntax": "\\${([ ~:a-zA-Z0-9._'\",\\-\\/\\(\\)]+?)}",
       "name": "aws",
       "runtime": "nodejs8.10",
-      "functions": {
-        "router": {
-          "handler": "handler.probot",
-          "environment": {
-            "WEBHOOK_SECRET": "top_secret",
-            "APP_ID": 18970,
-            "LOG_FORMAT": "json"
-          },
-          "events": [
-            {
-              "http": null,
-              "path": "/probot",
-              "method": "post"
-            }
-          ]
-        }
-      },
       "versionFunctions": true,
       "remoteFunctionData": null,
       "compiledCloudFormationTemplate": {
@@ -35,12 +18,288 @@
         "Resources": {
           "ServerlessDeploymentBucket": {
             "Type": "AWS::S3::Bucket"
+          },
+          "LoglifyLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/lambda-loglify-dev-loglify"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "dev",
+                        "lambda-loglify",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambda-loglify-dev-loglify:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambda-loglify-dev-loglify:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "lambda-loglify",
+                    "dev",
+                    "us-east-1",
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "LoglifyLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/lambda-loglify/dev/1539438292156-2018-10-13T13:44:52.156Z/lambda-loglify.zip"
+              },
+              "FunctionName": "lambda-loglify-dev-loglify",
+              "Handler": "handler.probot",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs8.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "WEBHOOK_SECRET": "top_secret",
+                  "APP_ID": 18970,
+                  "LOG_FORMAT": "json"
+                }
+              }
+            },
+            "DependsOn": [
+              "LoglifyLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "LoglifyLambdaVersionu8qjfNsNeZPmGvQynQc9n73V3oXQ1T0OSNFUcSg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "LoglifyLambdaFunction"
+              },
+              "CodeSha256": "GoXJJRGbbOpo6dncMQayI/1CcapHYHpswDUuNuqS0gg="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-lambda-loglify",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              }
+            }
+          },
+          "ApiGatewayResourceProbot": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "probot",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodProbotPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProbot"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "LoglifyLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1539438292202": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodProbotPost"
+            ]
+          },
+          "LoglifyLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "LoglifyLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "apigateway.",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
           }
         },
         "Outputs": {
           "ServerlessDeploymentBucketName": {
             "Value": {
               "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "LoglifyLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "LoglifyLambdaVersionu8qjfNsNeZPmGvQynQc9n73V3oXQ1T0OSNFUcSg"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.us-east-1.",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
             }
           }
         }
@@ -60,13 +319,39 @@
             }
           }
         }
-      }
+      },
+      "vpc": {}
     },
     "pluginsData": {},
-    "functions": {}
+    "functions": {
+      "loglify": {
+        "handler": "handler.probot",
+        "environment": {
+          "WEBHOOK_SECRET": "top_secret",
+          "APP_ID": 18970,
+          "LOG_FORMAT": "json"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "probot",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "lambda-loglify-dev-loglify",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs8.10",
+        "vpc": {}
+      }
+    },
+    "artifact": "/Users/bdougie/code/loglify/.serverless/lambda-loglify.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/lambda-loglify/dev/1539401739466-2018-10-13T03:35:39.466Z",
-    "artifact": ""
+    "artifactDirectoryName": "serverless/lambda-loglify/dev/1539438292156-2018-10-13T13:44:52.156Z",
+    "artifact": "lambda-loglify.zip"
   }
 }

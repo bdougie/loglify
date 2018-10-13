@@ -5,3 +5,5 @@ npm-debug.log
 package-lock.json
 coverage
 serverless.yml
+.serverless
+.DS-Store
