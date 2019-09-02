@@ -1,6 +1,6 @@
 {
   "action": "opened",
-  "issue": {
+  "deployment": {
     "url": "https://api.github.com/repos/Codertocat/Hello-World/issues/2",
     "repository_url": "https://api.github.com/repos/Codertocat/Hello-World",
     "labels_url": "https://api.github.com/repos/Codertocat/Hello-World/issues/2/labels{/name}",
@@ -41,7 +41,10 @@
     "updated_at": "2018-05-30T20:18:32Z",
     "closed_at": null,
     "author_association": "OWNER",
-    "body": "It looks like you accidently spelled 'commit' with two 't's."
+    "body": "It looks like you accidently spelled 'commit' with two 't's.",
+    "payload":  {
+      "target_url": "https://github.com"
+    }
   },
   "repository": {
     "id": 135493233,
