@@ -6,9 +6,8 @@ module.exports = app => {
   app.log('Yay, the app was loaded!')
 
   app.on('status', async context => {
-    const {branches, state, target_url, sha, description} = context.payload
+    const {branches, target_url, sha, description} = context.payload
     const {owner, repo} = context.repo()
-
 
     if (description.includes('Deploy preview ready')) {
       const branch = branches[0].name
@@ -26,18 +25,18 @@ module.exports = app => {
   })
 
   app.on('deployment', async context => {
-    const {id: deployment_id, sha, description, payload} = context.payload.deployment
+    const {id: deployment_id, description, payload} = context.payload.deployment
     const {target_url} = payload
     const {owner, repo} = context.repo()
 
     context.github.repos.createDeploymentStatus({
-      owner, repo,
+      owner,
+      repo,
       deployment_id,
-      state: "success",
+      state: 'success',
       target_url,
       environment_url: target_url,
       description
     })
   })
-
 }
