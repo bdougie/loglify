@@ -1,7 +1,7 @@
 # loglify
 ![loglify in Action](https://user-images.githubusercontent.com/5713670/64122714-e8ba8280-cd91-11e9-8b37-9733d24aa220.png)
 
-This GitHub action will handle connect the building and deploying process of Netlify to the [GitHub Deployments API](https://developer.github.com/v3/repos/deployments/). It can be configured to to sync your production, staging, and preview evnvironments. This App is built with [Probot](https://probot.github.io) that A Probot app
+Connect the deployment process of Netlify to the [GitHub Deployments API](https://developer.github.com/v3/repos/deployments/). It can be configured to to sync your production, staging, and preview evnvironments. This App is built with [Probot](https://probot.github.io) that A Probot app
 
 ## Setup
 
