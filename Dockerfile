@@ -9,7 +9,7 @@ LABEL "com.github.actions.icon"="rocket"
 LABEL "com.github.actions.color"="white"
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 
 ENTRYPOINT ["node", "/index.js"]
