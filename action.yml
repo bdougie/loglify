@@ -1,6 +1,6 @@
 name: 'Logs for Netlify'
 description: 'Connect the deployment process of Netlify to the GitHub Deployments API.'
-author: 'bdougie'
+author: 'Brian Douglas'
 branding:
   icon: 'activity'
   color: 'white'
