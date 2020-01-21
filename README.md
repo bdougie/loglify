@@ -27,7 +27,7 @@ jobs:
       uses: bdougie/loglify@master
 ```
 
-## Setup fot development
+## Setup for development
 
 ```sh
 # Install dependencies
