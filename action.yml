@@ -5,5 +5,5 @@ branding:
   icon: 'activity'
   color: 'white'
 runs:
-  using: 'node12'
-  main: 'action.js'
+  using: 'docker'
+  image: 'Dockerfile'
