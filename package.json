@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@probot/serverless-lambda": "^0.4.0",
-    "probot": "^9.9.1"
+    "probot": "^9.9.1",
+    "probot-actions-adapter": "^1.0.2"
   },
   "devDependencies": {
     "jest": "^24.9.0",
