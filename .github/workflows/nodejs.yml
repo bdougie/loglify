@@ -11,15 +11,17 @@ jobs:
       matrix:
         node-version: [8.x, 10.x, 12.x]
     
-    if: github.event.check_suite.app.name == 'Netlify' && github.event.check_suite.conclusion == 'success'
-
     steps:
     - uses: actions/checkout@v1
+      if: github.event.check_suite.app.name == 'Netlify' && github.event.check_suite.conclusion == 'success'
+
     - name: Use Node.js ${{ matrix.node-version }}
+      if: success()
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
+      if: success()
       run: |
         npm install
         npm run build --if-present
