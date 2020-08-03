@@ -13,6 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      if: github.event.check_suite.app.name == 'Netlify' && github.event.check_suite.conclusion == 'success'
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
