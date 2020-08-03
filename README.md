@@ -3,30 +3,6 @@
 
 Connect the deployment process of Netlify to the [GitHub Deployments API](https://developer.github.com/v3/repos/deployments/). It can be configured to sync your production, staging, and preview evnvironments. This App is built with [Probot](https://probot.github.io).
 
-## Usage
-
-```yml
-name: Logs for Netlify
-
-on:
-  # you can deploy to netlify based on branches or pull requests
-  pull_request:
-    branches:
-    - master
-  push:
-    branches:
-      - master
-      
-jobs:
-  logs4netlify:
-    name: Logs for Netlify
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Deploy Logs
-      uses: bdougie/loglify@master
-```
-
 ## Setup for development
 
 ```sh
